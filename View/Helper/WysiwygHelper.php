@@ -135,7 +135,7 @@ class WysiwygHelper extends AppHelper {
 		}
 		// 許可するタグの設定
 		if (Current::permission('html_not_limited')) {
-			$constants['extended_valid_elements'] = 'script[src|title|type]';
+			$constants['extended_valid_elements'] = 'script[src|title|type],a[*]';
 			$constants['valid_children'] = '+body[style]';
 			$constants['cleanup'] = false;
 		}
