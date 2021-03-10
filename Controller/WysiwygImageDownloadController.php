@@ -73,7 +73,10 @@ class WysiwygImageDownloadController extends Controller {
  * @throws NotFoundException
  * @return void
  */
-	public function download($roomId, $id, $size = '') {
+	public function download($roomId = null, $id = null, $size = '') {
+		if (is_null($roomId) || is_null($id)) {
+			throw new NotFoundException();
+		}
 		// シンプルにしたかったためAppModelを利用。インスタンス生成時少し速かった。
 		/* @var $Room AppModel */
 		$Room = ClassRegistry::init('Room');
