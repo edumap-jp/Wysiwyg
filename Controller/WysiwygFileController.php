@@ -149,8 +149,12 @@ class WysiwygFileController extends WysiwygAppController {
  * @param Int $roomId Room id
  * @param Int $id File id
  * @return void
+ * @throws NotFoundException
  */
-	public function download($roomId, $id) {
+	public function download($roomId = null, $id = null) {
+		if (is_null($roomId) || is_null($id)) {
+			throw new NotFoundException();
+		}
 		$options = [
 			'field' => 'Wysiwyg.file',
 			'download' => true,
