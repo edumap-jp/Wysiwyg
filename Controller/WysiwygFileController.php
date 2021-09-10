@@ -78,7 +78,10 @@ class WysiwygFileController extends WysiwygAppController {
 			// uploadFile登録に必要な data（block_key）を作成する。
 			$data = [
 				'UploadFile' => [
-					'block_key' => $this->data['Block']['key'],
+					// CleanUpの対象をblock_keyがあるか、無いかで判断するため、
+					// Wysiwygエディタに貼り付けただけで編集の決定を迄至っていないときはblock_keyを設定しない。
+					// 各プラグインのsave時に、WysiwygBehaviorのafterSaveでblock_keyを設定する。
+					// 'block_key' => $this->data['Block']['key'],
 					'room_id' => $this->data['Block']['room_id'],
 				]
 			];
@@ -146,8 +149,12 @@ class WysiwygFileController extends WysiwygAppController {
  * @param Int $roomId Room id
  * @param Int $id File id
  * @return void
+ * @throws NotFoundException
  */
-	public function download($roomId, $id) {
+	public function download($roomId = null, $id = null) {
+		if (is_null($roomId) || is_null($id)) {
+			throw new NotFoundException();
+		}
 		$options = [
 			'field' => 'Wysiwyg.file',
 			'download' => true,
