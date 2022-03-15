@@ -11,6 +11,7 @@
 App::uses('Controller', 'Controller');
 App::uses('AuthComponent', 'Controller/Component');
 App::uses('AppModel', 'Model');
+App::uses('NetCommonsSecurity', 'NetCommons.Utility');
 
 /**
  * WysiwygImageDownloadController
@@ -75,6 +76,9 @@ class WysiwygImageDownloadController extends Controller {
  */
 	public function download($roomId = null, $id = null, $size = '') {
 		if (is_null($roomId) || is_null($id)) {
+			throw new NotFoundException();
+		}
+		if (! (new NetCommonsSecurity())->enableBadIps()) {
 			throw new NotFoundException();
 		}
 		// シンプルにしたかったためAppModelを利用。インスタンス生成時少し速かった。
@@ -157,10 +161,9 @@ class WysiwygImageDownloadController extends Controller {
 		ClassRegistry::removeObject('RolesRoomsUser');
 		ClassRegistry::removeObject('RoomRolePermissions');
 
-		$options = ['field' => 'Wysiwyg.file'];
-
 		// サイズ指定があるときにサイズ指定を行う。
 		// 指定がなければオリジナルサイズ
+		$options = ['field' => 'Wysiwyg.file'];
 		if (!empty($size)) {
 			// 指定したサイズが UploadFileモデル指定以外のサイズの時は 404 Not Found.
 			if (array_key_exists($size, $this->_getThumbnailSizes()) === false) {
@@ -168,7 +171,6 @@ class WysiwygImageDownloadController extends Controller {
 			}
 			$options['size'] = $size;
 		}
-
 		return $this->Download->doDownloadByUploadFileId($id, $options);
 	}
 
