@@ -11,6 +11,7 @@
 App::uses('Controller', 'Controller');
 App::uses('AuthComponent', 'Controller/Component');
 App::uses('AppModel', 'Model');
+App::uses('NetCommonsSecurity', 'NetCommons.Utility');
 
 /**
  * WysiwygImageDownloadController
@@ -77,6 +78,10 @@ class WysiwygImageDownloadController extends Controller {
 		if (is_null($roomId) || is_null($id)) {
 			throw new NotFoundException();
 		}
+		if (! (new NetCommonsSecurity())->enableBadIps()) {
+			throw new NotFoundException();
+		}
+
 		// シンプルにしたかったためAppModelを利用。インスタンス生成時少し速かった。
 		/* @var $Room AppModel */
 		$Room = ClassRegistry::init('Room');
