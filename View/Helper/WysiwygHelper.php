@@ -55,6 +55,12 @@ class WysiwygHelper extends AppHelper {
 		// wysiwygに関連する js読み込みを Wysiwygプラグインから行う
 		$html = '';
 		$html .= $this->wysiwygScript();
+
+		$caution = $this->_View->element('Wysiwyg.wysiwyg_caution');
+		if ($caution) {
+			$attributes['before'] = $caution;
+		}
+
 		$html .= $this->NetCommonsForm->input($fieldName, $attributes);
 
 		return $html;
@@ -196,5 +202,9 @@ class WysiwygHelper extends AppHelper {
 		$this->_View->request->data = $currentData;
 
 		return Hash::get($tokens, '_Token.fields', '');
+	}
+
+	private function getWysiwygCaution() {
+		return $this->_View->element('Wysiwyg.wysiwyg_caution');
 	}
 }
