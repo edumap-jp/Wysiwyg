@@ -203,8 +203,4 @@ class WysiwygHelper extends AppHelper {
 
 		return Hash::get($tokens, '_Token.fields', '');
 	}
-
-	private function getWysiwygCaution() {
-		return $this->_View->element('Wysiwyg.wysiwyg_caution');
-	}
 }
