@@ -55,6 +55,12 @@ class WysiwygHelper extends AppHelper {
 		// wysiwygに関連する js読み込みを Wysiwygプラグインから行う
 		$html = '';
 		$html .= $this->wysiwygScript();
+
+		$caution = $this->_View->element('Wysiwyg.wysiwyg_caution');
+		if ($caution) {
+			$attributes['before'] = $caution;
+		}
+
 		$html .= $this->NetCommonsForm->input($fieldName, $attributes);
 
 		return $html;
