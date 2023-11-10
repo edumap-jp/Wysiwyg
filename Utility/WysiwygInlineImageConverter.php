@@ -63,7 +63,7 @@ class WysiwygInlineImageConverter {
 	public function __construct() {
 		//memberの場合、インライン画像は使用しない
 		$memberUrl = Configure::read('App.memberUrl');
-		if (!isset($memberUrl) || preg_match("#^(http(s)?://)member[.-]#", $memberUrl)) {
+		if (!isset($memberUrl) || Router::fullBaseUrl() === $memberUrl) {
 			$this->__useInlineImage = false;
 		}
 	}
