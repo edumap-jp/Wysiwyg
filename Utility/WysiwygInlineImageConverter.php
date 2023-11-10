@@ -175,7 +175,6 @@ class WysiwygInlineImageConverter {
 			return $content;
 		}
 
-CakeLog::debug(__METHOD__ . '(' . __LINE__ . ') ' . var_export($targets, true));
 		foreach ($targets as $target) {
 			if (! $target['file_exists']) {
 				continue;
