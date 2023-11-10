@@ -12,6 +12,7 @@
 App::uses('ModelBehavior', 'Model');
 App::uses('AngularParser', 'NetCommons.Lib');
 App::uses('Validation', 'Utility');
+App::uses('WysiwygInlineImageConverter', 'Wysiwyg.Utility');
 
 /**
  * Wysiwyg Behavior
@@ -58,6 +59,7 @@ class WysiwygBehavior extends ModelBehavior {
  * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
  */
 	public function afterFind(Model $model, $results, $primary = false) {
+		$results = $this->__convertInlineImage($model, $results);
 		return $this->convertBaseUrl($model, $results);
 	}
 
@@ -335,5 +337,32 @@ class WysiwygBehavior extends ModelBehavior {
 		}
 
 		return $content;
+	}
+
+/**
+ * Wysiwygフィールド内の「ファイル／画像」のパスの変換処理
+ *
+ * @param Model $model Model using this behavior
+ * @param array $results 置換対象データ
+ * @return array $results を置換した内容を返す
+ */
+	private function __convertInlineImage(Model $model, $results) {
+		$converter = new WysiwygInlineImageConverter();
+
+		foreach ($results as $key => $target) {
+			if (! isset($target[$model->alias]['id'])) {
+				continue;
+			}
+
+			foreach ($this->_fields[$model->alias] as $field) {
+				if (! isset($target[$model->alias][$field])) {
+					continue;
+				}
+				$target[$model->alias][$field] = $converter->convert($target[$model->alias][$field]);
+			}
+			$results[$key] = $target;
+		}
+
+		return $results;
 	}
 }
