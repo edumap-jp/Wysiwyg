@@ -66,7 +66,6 @@ class WysiwygInlineImageConverter {
 		if (!isset($memberUrl) || Router::fullBaseUrl() === $memberUrl) {
 			$this->__useInlineImage = false;
 		}
-		$this->__useInlineImage = true;
 	}
 
 /**
