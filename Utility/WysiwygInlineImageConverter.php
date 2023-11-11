@@ -55,7 +55,7 @@ class WysiwygInlineImageConverter {
  *
  * @var int
  */
-	const CONVERT_MAX_SIZE = 50;
+	const CONVERT_MAX_SIZE = 100;
 
 /**
  * Constructor
@@ -66,6 +66,7 @@ class WysiwygInlineImageConverter {
 		if (!isset($memberUrl) || Router::fullBaseUrl() === $memberUrl) {
 			$this->__useInlineImage = false;
 		}
+		$this->__useInlineImage = true;
 	}
 
 /**
