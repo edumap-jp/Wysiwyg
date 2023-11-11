@@ -39,7 +39,7 @@ class WysiwygInlineImageConverter {
  *
  * @var bool
  */
-	const DEFAULT_USE_INLINE_IMAGE = true;
+	const DEFAULT_USE_INLINE_IMAGE = false;
 
 /**
  * インライン画像に変換するかどうか
