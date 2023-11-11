@@ -55,7 +55,7 @@ class WysiwygInlineImageConverter {
  *
  * @var int
  */
-	const CONVERT_MAX_SIZE = 100;
+	const CONVERT_MAX_SIZE = 50;
 
 /**
  * Constructor
