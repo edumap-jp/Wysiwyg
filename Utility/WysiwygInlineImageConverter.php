@@ -49,6 +49,13 @@ class WysiwygInlineImageConverter {
 	private $__useInlineImage = self::DEFAULT_USE_INLINE_IMAGE;
 
 /**
+ * インライン画像に変換するかどうか
+ *
+ * @var array
+ */
+	private static $__isTopPage = false;
+
+/**
  * 変換する最大件数
  *
  * インライン画像はリクエストを少なくする一方でメモリを消費する。そのため変換する件数を制限する
@@ -58,12 +65,22 @@ class WysiwygInlineImageConverter {
 	const CONVERT_MAX_SIZE = 25;
 
 /**
+ * トップページを表示しているかどうか
+ *
+ * @param bool $isTopPage トップページを表示しているかどうか
+ * @return array
+ */
+	public static function setIsTopPage($isTopPage) {
+		self::$__isTopPage = $isTopPage;
+	}
+
+/**
  * Constructor
  */
 	public function __construct() {
 		//memberの場合、インライン画像は使用しない
 		$memberUrl = Configure::read('App.memberUrl');
-		if (!isset($memberUrl) || Router::fullBaseUrl() === $memberUrl) {
+		if (!isset($memberUrl) || self::$__isTopPage || Router::fullBaseUrl() === $memberUrl) {
 			$this->__useInlineImage = false;
 		}
 	}
@@ -84,6 +101,9 @@ class WysiwygInlineImageConverter {
 		$uploadIds = [];
 		$indexes = array_keys($matches[0]);
 		foreach ($indexes as $idx) {
+			if ($idx === 0) {
+				continue;
+			}
 			$target = [
 				'room_id' => $matches[2][$idx],
 				'upload_id' => $matches[3][$idx],
