@@ -169,8 +169,13 @@ class WysiwygImageDownloadController extends Controller {
 			if (array_key_exists($size, $this->_getThumbnailSizes()) === false) {
 				throw new NotFoundException();
 			}
-			$options['size'] = $size;
+			if (! in_array($size, ['medium', 'small', 'thumb'], true)) {
+				$size = 'medium';
+			}
+		} else {
+			$size = 'medium';
 		}
+		$options['size'] = 'medium';
 		return $this->Download->doDownloadByUploadFileId($id, $options);
 	}
 

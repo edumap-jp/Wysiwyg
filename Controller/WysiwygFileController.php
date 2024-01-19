@@ -121,10 +121,17 @@ class WysiwygFileController extends WysiwygAppController {
 				true
 			);
 
+			$localPath = UPLOADS_ROOT .
+					$uploadFile['UploadFile']['path'] .
+					$uploadFile['UploadFile']['id'] . '/' .
+					$uploadFile['UploadFile']['real_file_name'];
+			$size = @getimagesize($localPath);
 			$file = [
 				'id' => $uploadFile['UploadFile']['id'],
 				'original_name' => $uploadFile['UploadFile']['original_name'],
 				'path' => $url,
+				'image_ratio' =>
+					(!empty($size) && $size[0] < $size[1]) ? round($size[0] / $size[1], 4) : 1,
 			];
 		} else {
 			$file = [];
@@ -196,9 +203,15 @@ class WysiwygFileController extends WysiwygAppController {
 		//@codeCoverageIgnoreEnd
 
 		$thumbnailSizes = $this->UploadFile->actsAs['Upload.Upload']['real_file_name']['thumbnailSizes'];
-		$thumbnailSizes['biggest'] = '1200ml';
+		if (isset($thumbnailSizes['big'])) {
+			unset($thumbnailSizes['big']);
+		}
+		if (isset($thumbnailSizes['biggest'])) {
+			unset($thumbnailSizes['biggest']);
+		}
+		//$thumbnailSizes['medium'] = '400ml';
 		// 元ファイルをリサイズする大きさ
-		$thumbnailSizes['origin_resize'] = '1200ml';
+		$thumbnailSizes['origin_resize'] = $thumbnailSizes['medium'];
 		$this->UploadFile->uploadSettings('real_file_name', 'thumbnailSizes', $thumbnailSizes);
 
 		// validateルールの設定

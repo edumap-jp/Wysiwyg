@@ -29,17 +29,11 @@ tinymce.PluginManager.add('nc3Image', function(editor, url) {
     right: 'pull-right'
   };
   var sizeFormVals = [{
-    text: 'Default size(800px)',
-    value: 'big'
-  }, {
-    text: 'original',
-    value: ''
-  }, {
-    text: 'biggest(1200px)',
-    value: 'biggest'
-  }, {
-    text: 'medium(400px)',
+    text: 'Default size(400px)',
     value: 'medium'
+  }, {
+    text: 'big(800px)',
+    value: 'big'
   }, {
     text: 'small(200px)',
     value: 'small'
@@ -117,23 +111,36 @@ tinymce.PluginManager.add('nc3Image', function(editor, url) {
               if (d.size === 'biggest' || d.size === 'big') {
                 imgClass = imgClass + ' ' + vals.img_elm_block_class;
               }
+              let imgSize = null;
+              if (d.size === 'biggest' || d.size === 'big') {
+                imgSize = 800;
+              } else if (d.size === 'medium') {
+                imgSize = 400;
+              } else if (d.size === 'small') {
+                imgSize = 200;
+              }
               if (positionClass[d.position]) {
                 imgClass = imgClass + ' ' + positionClass[d.position];
               }
-              editor.selection.collapse(true);
-              editor.execCommand('mceInsertContent', false,
-                  editor.dom.createHTML('img', {
-                    src: imgSrc,
-                    alt: d.alt,
-                    title: d.alt,
-                    class: imgClass,
-                    'data-size': d.size,
-                    'data-position': d.position,
-                    'data-imgid': res.file.id
-                  })
-              );
-              // dialog close
-              top.tinymce.activeEditor.windowManager.close();
+              let imgAttr = {
+                 src: imgSrc,
+                 alt: d.alt,
+                 title: d.alt,
+                 class: imgClass,
+                 'data-size': d.size,
+                 'data-position': d.position,
+                 'data-imgid': res.file.id
+               };
+               if (imgSize !== null && res.file.image_ratio) {
+                 imgAttr['width'] = imgSize * res.file.image_ratio;
+               }
+
+               editor.selection.collapse(true);
+               editor.execCommand('mceInsertContent', false,
+                 editor.dom.createHTML('img', imgAttr)
+               );
+               // dialog close
+               top.tinymce.activeEditor.windowManager.close();
             } // if
             loading.addClass('ng-hide');
           },

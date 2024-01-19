@@ -10,6 +10,8 @@
  */
 
 App::uses('WysiwygBehavior', 'Wysiwyg.Model/Behavior');
+App::uses('CurrentLib', 'NetCommons.Lib');
+App::uses('Container', 'Containers.Model');
 
 /**
  * WysiwygUtility
@@ -62,7 +64,7 @@ class WysiwygInlineImageConverter {
  *
  * @var int
  */
-	const CONVERT_MAX_SIZE = 35;
+	const CONVERT_MAX_SIZE = 30;
 
 /**
  * トップページを表示しているかどうか
@@ -104,10 +106,12 @@ class WysiwygInlineImageConverter {
 			if ($idx === 0) {
 				continue;
 			}
+
+			$size = $matches[4][$idx];
 			$target = [
 				'room_id' => $matches[2][$idx],
 				'upload_id' => $matches[3][$idx],
-				'size' => $matches[4][$idx],
+				'size' => (in_array($size, ['medium', 'small', 'thumb'], true) ? $size : 'medium'),
 				'pattern' => $matches[1][$idx],
 			];
 
@@ -186,7 +190,7 @@ class WysiwygInlineImageConverter {
  * @return string 変換した結果
  */
 	public function convert($content) {
-		if (! $this->__useInlineImage || count($this->__uploads) > self::CONVERT_MAX_SIZE) {
+		if (! $this->__isConverted()) {
 			return $content;
 		}
 
@@ -222,4 +226,16 @@ class WysiwygInlineImageConverter {
 		return sprintf('data:%s;base64,%s', $mimeType, $encodeData);
 	}
 
+/**
+ * インライン画像に変換して良いかどうか。
+ *
+ * @return bool
+ */
+	private function __isConverted() {
+		$containerType = \CurrentLib::read('Box.container_type');
+
+		return $this->__useInlineImage &&
+				$containerType === \Container::TYPE_MAIN &&
+				count($this->__uploads) <= self::CONVERT_MAX_SIZE;
+	}
 }
