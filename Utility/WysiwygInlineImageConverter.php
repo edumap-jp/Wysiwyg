@@ -64,7 +64,7 @@ class WysiwygInlineImageConverter {
  *
  * @var int
  */
-	const CONVERT_MAX_SIZE = 30;
+	const CONVERT_MAX_SIZE = 35;
 
 /**
  * トップページを表示しているかどうか
