@@ -175,7 +175,7 @@ class WysiwygImageDownloadController extends Controller {
 		} else {
 			$size = 'medium';
 		}
-		$options['size'] = 'medium';
+		$options['size'] = $size;
 		return $this->Download->doDownloadByUploadFileId($id, $options);
 	}
 
