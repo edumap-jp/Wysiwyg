@@ -204,8 +204,8 @@ class WysiwygFileController extends WysiwygAppController {
 		//@codeCoverageIgnoreEnd
 
 		$thumbnailSizes = $this->UploadFile->actsAs['Upload.Upload']['real_file_name']['thumbnailSizes'];
-		//$originalSize = WysiwygInlineImageConverter::getOriginalSize();
-		if (isset($thumbnailSizes['big'])) {
+		$originalSize = WysiwygInlineImageConverter::getOriginalSize();
+		if ($originalSize === 'medium' && isset($thumbnailSizes['big'])) {
 			unset($thumbnailSizes['big']);
 		}
 		if (isset($thumbnailSizes['biggest'])) {
