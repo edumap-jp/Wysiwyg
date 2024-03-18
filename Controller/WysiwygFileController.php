@@ -10,6 +10,7 @@
  */
 
 App::uses('WysiwygAppController', 'Wysiwyg.Controller');
+App::uses('WysiwygInlineImageConverter', 'Wysiwyg.Utility');
 
 /**
  * File Controller
@@ -203,7 +204,8 @@ class WysiwygFileController extends WysiwygAppController {
 		//@codeCoverageIgnoreEnd
 
 		$thumbnailSizes = $this->UploadFile->actsAs['Upload.Upload']['real_file_name']['thumbnailSizes'];
-		if (isset($thumbnailSizes['big'])) {
+		$originalSize = WysiwygInlineImageConverter::getOriginalSize();
+		if ($originalSize === 'medium' && isset($thumbnailSizes['big'])) {
 			unset($thumbnailSizes['big']);
 		}
 		if (isset($thumbnailSizes['biggest'])) {

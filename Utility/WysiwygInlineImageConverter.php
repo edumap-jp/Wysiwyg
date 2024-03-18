@@ -77,6 +77,30 @@ class WysiwygInlineImageConverter {
 	}
 
 /**
+ * 画像のオリジナルサイズ
+ *
+ * @return string
+ */
+	public static function getOriginalSize() {
+		$fullBaseUrl = Configure::read('App.fullBaseUrl');
+
+		$urls = array_map(function ($url) {
+			return preg_quote($url, '/');
+		}, [
+			'kawaguchicity-hs.ed.jp',
+			'kawaguchicity-jh.ed.jp',
+			//'sample1-app.edumap.local.jp',
+		]);
+		if (preg_match('/' . implode('|', $urls) . '/', $fullBaseUrl)) {
+			$size = 'big';
+		} else {
+			$size = 'medium';
+		}
+
+		return $size;
+	}
+
+/**
  * Constructor
  */
 	public function __construct() {
@@ -100,6 +124,8 @@ class WysiwygInlineImageConverter {
 			return $targets;
 		}
 
+		$originalSize = self::getOriginalSize();
+
 		$uploadIds = [];
 		$indexes = array_keys($matches[0]);
 		foreach ($indexes as $idx) {
@@ -111,7 +137,8 @@ class WysiwygInlineImageConverter {
 			$target = [
 				'room_id' => $matches[2][$idx],
 				'upload_id' => $matches[3][$idx],
-				'size' => (in_array($size, ['medium', 'small', 'thumb'], true) ? $size : 'medium'),
+				'size' =>
+					(in_array($size, [$originalSize, 'medium', 'small', 'thumb'], true) ? $size : 'medium'),
 				'pattern' => $matches[1][$idx],
 			];
 

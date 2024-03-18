@@ -12,6 +12,7 @@ App::uses('Controller', 'Controller');
 App::uses('AuthComponent', 'Controller/Component');
 App::uses('AppModel', 'Model');
 App::uses('NetCommonsSecurity', 'NetCommons.Utility');
+App::uses('WysiwygInlineImageConverter', 'Wysiwyg.Utility');
 
 /**
  * WysiwygImageDownloadController
@@ -169,7 +170,9 @@ class WysiwygImageDownloadController extends Controller {
 			if (array_key_exists($size, $this->_getThumbnailSizes()) === false) {
 				throw new NotFoundException();
 			}
-			if (! in_array($size, ['medium', 'small', 'thumb'], true)) {
+
+			$originalSize = WysiwygInlineImageConverter::getOriginalSize();
+			if (! in_array($size, [$originalSize, 'medium', 'small', 'thumb'], true)) {
 				$size = 'medium';
 			}
 		} else {
