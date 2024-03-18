@@ -124,7 +124,7 @@ class WysiwygInlineImageConverter {
 			return $targets;
 		}
 
-		$originalSize = self::getOriginalSize();
+		//$originalSize = self::getOriginalSize();
 
 		$uploadIds = [];
 		$indexes = array_keys($matches[0]);
@@ -137,8 +137,7 @@ class WysiwygInlineImageConverter {
 			$target = [
 				'room_id' => $matches[2][$idx],
 				'upload_id' => $matches[3][$idx],
-				'size' =>
-					(in_array($size, [$originalSize, 'medium', 'small', 'thumb'], true) ? $size : 'medium'),
+				'size' => (in_array($size, ['medium', 'small', 'thumb'], true) ? $size : 'medium'),
 				'pattern' => $matches[1][$idx],
 			];
 
