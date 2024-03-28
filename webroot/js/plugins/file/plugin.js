@@ -31,6 +31,11 @@ tinymce.PluginManager.add('file', function(editor, url) {
         if (src) {
           // formオブジェクト作成
           var files = $('#uploadForm').find('input[type="file"]')[0].files[0];
+          if (files.size > 5000000) {
+            alert('指定したファイルは5MBを超えています。5MB未満にしてください。');
+            return;
+          }
+
           var formData = new FormData();
           formData.append('data[Wysiwyg][file]', files);
           formData.append('data[Block][key]', editor.settings.nc3Configs.blockKey);

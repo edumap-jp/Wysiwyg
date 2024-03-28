@@ -50,10 +50,23 @@ tinymce.PluginManager.add('nc3Image', function(editor, url) {
         thumbEl = $('#thumb-wrap'),
         thumbImg = thumbEl.find('.image-thumb');
 
+    var thumbMess = $('.thumb-message');
+    if (thumbMess.length > 0) {
+      thumbMess[0].classList.add('hidden');
+    }
+    var thumbError = $('.thumb-error');
+    if (thumbError.length > 0) {
+      thumbError[0].classList.add('hidden');
+    }
     if (!e.files.length) {
       if (0 < thumbImg.length) {
         thumbImg.remove();
         return;
+      }
+    } else if (file.size > 5000000) {
+      var thumbError = $('.thumb-error');
+      if (thumbError.length > 0) {
+        thumbError[0].classList.remove('hidden');
       }
     } else {
       if (file.type.match('image.*')) {
@@ -86,6 +99,10 @@ tinymce.PluginManager.add('nc3Image', function(editor, url) {
       var files = $('#uploadForm')
           .find('input[type="file"]')[0]
           .files[0];
+
+      if (files.size > 5000000) {
+        return;
+      }
       var formData = new FormData();
       formData.append('data[Wysiwyg][file]', files);
       formData.append('data[Block][key]', editor.settings.nc3Configs.blockKey);
@@ -195,8 +212,15 @@ tinymce.PluginManager.add('nc3Image', function(editor, url) {
     {
       type: 'panel',
       id: 'thumb-wrap',
-      style: 'height:60px;text-align:right;background-color:#fff;',
-      html: ''
+      style: 'height:60px; max-height: 80px; text-align:right;background-color:#fff;',
+      html: function () {
+        return '<div class="thumb-message" style="color: #737373; text-align:right;">' +
+                '5MB未満のファイルを指定してください。' +
+                '</div>' +
+                '<div class="thumb-error hidden" style="color: #a94442; text-align:right;">' +
+                '指定したファイルは5MBを超えています。<br>解像度を下げて、5MB未満にしてください。' +
+                '</div>';
+      }
     },
     // alt
     {
