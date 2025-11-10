@@ -66,30 +66,24 @@ class WysiwygViewElementsMathjaxJsTest extends WysiwygControllerTestCase {
 		$this->assertRegExp($pattern, $view);
 
 		$expected =
-			'<script type="text/x-mathjax-config">' .
+			'<script type="text/javascript">' .
 				'//<![CDATA[ ' .
-					'MathJax.Hub.Config({ ' .
-						'skipStartupTypeset: true, ' .
-						'tex2jax: { ' .
-							'inlineMath: [[\'$$\',\'$$\'], [\'\\\\\\\\(\',\'\\\\\\\\)\']], ' .
-							'displayMath: [[\'\\\\\\\\[\',\'\\\\\\\\]\']] ' .
-						'}, ' .
-						'asciimath2jax: { delimiters: [[\'$$\',\'$$\']] } }' .
-					'); ' .
+					'MathJax = { ' .
+						'tex: { ' .
+							'inlineMath: [[\'$$\', \'$$\'], [\'\\\\\\\\(\', \'\\\\\\\\)\']], ' .
+							'displayMath: [[\'\\\\\\\\[\', \'\\\\\\\\]\']] ' .
+						'} ' .
+					'}; ' .
+					'$(document).ready(function(){ MathJax.typesetPromise(); }); ' .
 				'//]]>' .
 			'</script>';
+
 		$this->assertTextContains($expected, $view);
 
 		$pattern = preg_quote('<script type="text/javascript" src="', '/') . '.*?' .
-				preg_quote('/components/MathJax/MathJax.js?config=TeX-MML-AM_CHTML"></script>', '/');
+				'\/components\/MathJax\/es5\/tex-chtml\.js\?[0-9]+">\<\/script>';
 		$this->assertRegExp('/' . $pattern . '/', $view);
 
-		$expected =
-			'<script type="text/javascript">' .
-				'//<![CDATA[ ' .
-					'$(document).ready(function(){ MathJax.Hub.Queue([\'Typeset\', MathJax.Hub, \'nc-container\']); }); ' .
-				'//]]>' .
-			'</script>';
 		$this->assertTextContains($expected, $view);
 	}
 

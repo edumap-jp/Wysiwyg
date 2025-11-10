@@ -7,14 +7,14 @@ var TEX_IFR = new (function TEX_IFR() {
   var $IFRAME;
 
   var __setMathJax = function(id) {
-    MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'preview_ifr']);
+    MathJax.typesetPromise();
   };
   self.init = function($ifr) {
     $IFRAME = $ifr;
     // init MathJax
-    MathJax.Hub.Config({
-      tex2jax: { inlineMath: [['$$', '$$'], ['\\(', '\\)']] }
-    });
+    MathJax = {
+      tex: { inlineMath: [['$$', '$$'], ['\\(', '\\)']] }
+    };
     __setMathJax();
   };
 })();
