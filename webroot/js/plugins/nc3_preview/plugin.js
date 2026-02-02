@@ -16,7 +16,6 @@ tinymce.PluginManager.add('nc3Preview', function(editor) {
   editor.addCommand('mcePreview', function() {
     var htmlTxt = '<iframe id="preview_ifr"' +
             ' src="about:blank" frameborder="0"' +
-            (sandbox ? ' sandbox="allow-scripts allow-same-origin"' : '') +
             '></iframe>';
     editor.windowManager.open({
       title: 'Preview',
