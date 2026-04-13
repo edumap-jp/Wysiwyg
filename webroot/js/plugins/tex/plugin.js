@@ -18,8 +18,8 @@ tinymce.PluginManager.add('tex', function(editor, url) {
   var preview = function() {
     // TODO tinymce処理版にできるかどうか
     var txt = $(vals.iptTextArea).val();
-    $('#tex-preview').text('$$' + txt + '$$');
-    MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'tex-preview']);
+    $('#tex-preview').text('$$ ' + txt + ' $$');
+    MathJax.typesetPromise();
     return false;
   };
 
@@ -29,7 +29,7 @@ tinymce.PluginManager.add('tex', function(editor, url) {
       console.debug('Editor was clicked: ' + e.target);
       if ($(e.target).hasClass('tex-char')) {
         var txt = $(e.target).text();
-        var rep = txt.replace(/\$\$\s|\s\$\$/g, '');
+        var rep = txt.replace(/\$\$|\$\$/g, '');
         showDialog();
       }
     });
@@ -77,7 +77,7 @@ tinymce.PluginManager.add('tex', function(editor, url) {
     var isTarget = selectedNode.tagName == 'SPAN' &&
         editor.dom.hasClass(selectedNode, vals.tex_elm_class) == true;
     if (isTarget) {
-      val = selectedNode.innerText.replace(/\$\$\s|\s\$\$/g, '');
+      val = selectedNode.innerText.replace(/\$\$|\$\$/g, '');
     }
 
     editor.windowManager.open({
@@ -95,7 +95,7 @@ tinymce.PluginManager.add('tex', function(editor, url) {
         var txt = e.data.tex;
         // 再編集の場合
         if (isTarget) {
-          selectedNode.innerText = '$$' + txt + '$$';
+          selectedNode.innerText = '$$ ' + txt + ' $$';
         }
         // 新規挿入の場合
         else {

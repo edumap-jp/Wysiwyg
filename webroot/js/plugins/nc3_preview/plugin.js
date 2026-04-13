@@ -15,8 +15,7 @@ tinymce.PluginManager.add('nc3Preview', function(editor) {
 
   editor.addCommand('mcePreview', function() {
     var htmlTxt = '<iframe id="preview_ifr"' +
-            ' src="javascript:\'\'" frameborder="0"' +
-            (sandbox ? ' sandbox="allow-scripts"' : '') +
+            ' src="about:blank" frameborder="0"' +
             '></iframe>';
     editor.windowManager.open({
       title: 'Preview',
@@ -38,6 +37,14 @@ tinymce.PluginManager.add('nc3Preview', function(editor) {
             editor.documentBaseURI.getURI() +
             '">';
         // new add for Mathjax //////////////////////////////////
+        headHtml += '<script type="text/javascript">' +
+                'MathJax = {' +
+                    'tex: {' +
+                        "inlineMath: [['$$', '$$'], ['\\\\(', '\\\\)']]," +
+                        "displayMath: [['\\\\[', '\\\\]']]" +
+                    '}' +
+                '};' +
+                '</script>';
         headHtml += '<script type="text/javascript" async ' +
             'src="' + editor.settings.nc3Configs.mathjax_js + '"' +
             '></script>';
@@ -80,27 +87,50 @@ tinymce.PluginManager.add('nc3Preview', function(editor) {
             '</html>'
             );
 
-        if (!sandbox) {
-          // IE 6-11 doesn't support data uris on iframes
-          // so I guess they will have to be less secure since we
-          // can't sandbox on those
-          // TODO: Use sandbox if future versions of IE supports
-          // iframes with data: uris.
-          var doc =
-              this.getEl('body').firstChild.contentWindow.document;
-          doc.open();
-          doc.write(previewHtml);
-          doc.close();
-        } else {
-          this.getEl('body').firstChild.src =
-              'data:text/html;charset=utf-8,' +
-              encodeURIComponent(previewHtml);
-        }
-        // add for Tex
-        var body = this.getEl('body');
-        $(body).find('iframe').load('', function() {
-          TEX_IFR.init($(this));
-        });
+        //if (!sandbox) {
+        //  // IE 6-11 doesn't support data uris on iframes
+        //  // so I guess they will have to be less secure since we
+        //  // can't sandbox on those
+        //  // TODO: Use sandbox if future versions of IE supports
+        //  // iframes with data: uris.
+        //  var doc =
+        //      this.getEl('body').firstChild.contentWindow.document;
+        //  doc.open();
+        //  doc.write(previewHtml);
+        //  doc.close();
+        //} else {
+        //  this.getEl('body').firstChild.src =
+        //      'data:text/html;charset=utf-8,' +
+        //      encodeURIComponent(previewHtml);
+        //}
+        //// add for Tex
+        //var body = this.getEl('body');
+        //$(body).find('iframe').load('', function() {
+        //  TEX_IFR.init($(this));
+        //});
+
+        // woffファイルでクロスオリジンエラー(Access-Control-Allow-Origin)が生じるため、
+        // data: を使わず about:blank にして同一オリジンで書く
+        var iframe = this.getEl('body').firstChild;
+        var doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(previewHtml);
+        doc.close();
+
+        // iframe内のMathJaxを、iframe内で「ロード完了後」に typeset
+        iframe.onload = function() {
+          var w = iframe.contentWindow;
+          if (w && w.MathJax) {
+            // MathJax v3: startup がある場合はそれを待つ
+            if (w.MathJax.startup && w.MathJax.startup.promise) {
+              w.MathJax.startup.promise.then(function() {
+                w.MathJax.typesetPromise();
+              });
+            } else {
+              w.MathJax.typesetPromise();
+            }
+          }
+        };
       }
     });
   });
