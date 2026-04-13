@@ -81,7 +81,7 @@ class WysiwygViewElementsMathjaxJsTest extends WysiwygControllerTestCase {
 		$this->assertTextContains($expected, $view);
 
 		$pattern = preg_quote('<script type="text/javascript" src="', '/') . '.*?' .
-				'\/components\/MathJax\/es5\/tex-chtml\.js\?[0-9]+">\<\/script>';
+				'\/components\/MathJax\/es5\/tex-chtml\.js(\?[0-9]+)?">\<\/script>';
 		$this->assertRegExp('/' . $pattern . '/', $view);
 
 		$this->assertTextContains($expected, $view);
