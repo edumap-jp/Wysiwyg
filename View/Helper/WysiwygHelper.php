@@ -119,7 +119,7 @@ class WysiwygHelper extends AppHelper {
 			'tex_icon' => $this->NetCommonsHtml->url('/wysiwyg/img/title_icons/tex.svg'),
 			// MathJax JSのリンク
 			'mathjax_js' => $this->NetCommonsHtml->url(
-				'/components/MathJax/MathJax.js?config=TeX-MML-AM_CHTML'
+				'/components/MathJax/es5/tex-chtml.js'
 			),
 			// ファイル・画像アップロードパス
 			'file_upload_path' => $this->NetCommonsHtml->url('/wysiwyg/file/upload'),
